@@ -1,0 +1,12 @@
+{
+  "name": "design-tokens",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "repository": "git@github.com:deeleman/design-tokens.git",
+  "author": "Pablo Deeleman <deeleman@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "generate:css": "node ./generate-css.js"
+  }
+}

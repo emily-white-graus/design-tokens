@@ -1,0 +1,49 @@
+name: Transform tokens sent from figma
+# This workflow triggers the action when a post to "https://api.github.com/repos/:username/:repo/dispatches" comes in
+# and the event_type property from the request body is 'update-tokens'
+on:
+  repository_dispatch:
+    types: [update-tokens]
+jobs:
+  build:
+    name: Transform Figma design tokens for immediate consumption
+
+    runs-on: ubuntu-latest
+
+    strategy:
+        matrix:
+          node-version: [20.x ]
+          directory: [assets]
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create "tokens" directory
+        run: 'mkdir -p ${{ matrix.directory }}'
+      # this creates a json file from the stringified json from the request body
+      - name: create json from request body
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.3
+        with:
+          # it uses the figma filename that was sent as then filename parameter
+          name: ${{ github.event.client_payload.filename }}
+          # it uses the json string that was sent as the tokens parameter
+          json: ${{ github.event.client_payload.tokens }}
+          dir: ${{ matrix.directory }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Transform design tokens 
+        run: yarn generate:css
+      - name: Create PR 
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: ${{ github.event.client_payload.commitMessage || 'Tokens updated' }}
+          title: "Design tokens updated"
+          body: "Design tokens have been updated via Figma and need to be reviewed."
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: 'main'
