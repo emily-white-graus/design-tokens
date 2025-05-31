@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-  "repository": "git@github.com:deeleman/design-tokens.git",
-  "author": "Pablo Deeleman <deeleman@gmail.com>",
+  "repository": "git@github.com:emily-white-graus/design-tokens.git",
+  "author": "Emily White",
   "license": "MIT",
   "scripts": {
     "generate:css": "node ./generate-css.js"
