@@ -12,7 +12,7 @@ jobs:
 
     strategy:
         matrix:
-          node-version: [20.x ]
+          node-version: [20.x]
           directory: [assets]
 
     steps:
@@ -33,11 +33,11 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          cache: 'npm'
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: npm install --frozen-lockfile
       - name: Transform design tokens 
-        run: yarn generate:css
+        run: npm generate:css
       - name: Create PR 
         uses: peter-evans/create-pull-request@v7
         with:
